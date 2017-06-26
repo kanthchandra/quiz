@@ -3,5 +3,6 @@
 module.exports = index;
 
 function index(req, res) {
-  res.render('index', { title: "Let's start with the quiz"});
+  var path = require('path')
+  res.sendFile(path.join(__dirname, '../views', 'index.html'));
 }

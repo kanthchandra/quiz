@@ -1,28 +1,26 @@
 'use strict';
 
-var self = post;
+var self = login;
 module.exports = self;
 
 var async = require('async');
 var _ = require('underscore');
-var uuid = require('node-uuid');
 var users = require('../models/users.js');
 
-function post(req, res) {
+function login(req, res) {
   var bag = {
     reqBody: req.body,
-    token: uuid.v4(),
     resBody: {}
   };
 
-  logger.info('Inside |users|post');
+  logger.info('Inside |users|login');
 
   async.series([
       _checkInputParams.bind(null, bag),
       _post.bind(null, bag)
     ],
     function (err) {
-      logger.info('Completed |users|post');
+      logger.info('Completed |users|login');
       if (err)
         return res.status(err.statusCode).json(err);
 
@@ -32,7 +30,7 @@ function post(req, res) {
 }
 
 function _checkInputParams(bag, next) {
-  logger.verbose('Inside |users|post|_checkInputParams');
+  logger.verbose('Inside |users|login|_checkInputParams');
 
   if (!bag.reqBody)
     return next({statusCode: 400, message: 'Missing body'});
@@ -47,19 +45,23 @@ function _checkInputParams(bag, next) {
 
 
 function _post(bag, next) {
-  logger.verbose('Inside |users|post|_post');
+  logger.verbose('Inside |users|login|_post');
 
-  var user = {
-    name: bag.reqBody.username,
-    token: bag.token,
-    password: bag.reqBody.password
+  var query = {
+    where: {
+      name: bag.reqBody.username,
+      password: bag.reqBody.password
+    }
   };
 
 
-  users.create(user).asCallback(
+  users.findOne(query).asCallback(
     function (err, user) {
       if (err)
-        return next({statusCode: 500, message: err})
+        return next({statusCode: 500, message: err});
+
+      if (_.isEmpty(user))
+        return next({statusCode: 400, message: 'Incorrect username or password'});
 
       bag.resBody = user;
       bag.resBody.statusCode = 200;

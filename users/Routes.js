@@ -8,4 +8,5 @@ function users(app) {
     require('./getUserById.js'));
   app.get('/', require('./index.js'));
   app.post('/users', require('./post.js'));
+  app.post('/users/authenticate', require('./login.js'));
 }
