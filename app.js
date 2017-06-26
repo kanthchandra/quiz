@@ -160,8 +160,10 @@ function initializeSequelize(bag, next) {
 
   sequelize.sync().asCallback(
     function (err) {
-      if (err)
+      if (err) {
+        logger.error(util.inspect(err, {depth: null}));
         return next(err)
+      }
 
       logger.debug('SEQUELIZE: Synced successfully');
       return next();
