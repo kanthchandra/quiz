@@ -1,11 +1,47 @@
-﻿<h1>Hi {{vm.username}}!</h1>
-<p>Please Join one of the rooms listed below to begin quizzing</p>
-<h3>List of Available Rooms</h3>
-<ul>
+﻿<h3>Hi {{vm.username}}!</h3>
+<span ng-if="vm.showRooms">
+  <p>Please Join one of the rooms listed below to begin quizzing</p>
+  <h3>List of Available Rooms</h3>
+  <ul>
     <li ng-repeat="room in vm.allRooms">
-        {{room.name}} ({{room.totalUsers}}/{{room.maxUsers}} Joined)
-        - <a ng-click="vm.joinRoom(vm.username)">Join</a>
+      {{room.name}} {{room.totalUsers}}/{{room.maxUsers}} Joined
+      - <a ng-click="vm.joinRoom(vm.username)">Join</a>
     </li>
-</ul>
-<p>&nbsp;</p>
+  </ul>
+  <p>&nbsp;</p>
+</span>
+<span ng-if="!vm.showCreateRoomForm">
+  <p>Create your own room for quizzing <button class="btn btn-primary" ng-click="vm.showCreateRoomForm = !showCreateRoomForm">Create Room</button></p>
+</span>
+
+<form ng-if="vm.showCreateRoomForm" name="form" ng-submit="vm.createRoom()" role="form">
+  <div class="form-group" ng-class="{ 'has-error': form.roomname.$dirty && form.roomname.$error.required }">
+    <label for="roomname">New Quiz Room Name</label>
+    <input type="text" name="roomname" id="roomname" class="form-control" ng-model="vm.room.name" required />
+    <span ng-show="form.roomname.$dirty && form.roomname.$error.required" class="help-block">roomname is required</span>
+  </div>
+  <div class="form-group" ng-class="{ 'has-error': form.maxUsers.$dirty && form.maxUsers.$error.required }">
+    <label for="maxUsers">Maximum Number of Users Allowed</label>
+    <input type="number" min="2" name="maxUsers" id="maxUsers" class="form-control" ng-model="vm.room.maxUsers" required />
+    <span ng-show="form.maxUsers.$dirty && form.maxUsers.$error.required" class="help-block">Maximum number of users is required</span>
+  </div>
+
+  <div class="form-group" ng-class="{ 'has-error': form.timePerQuestionInMinutes.$dirty && form.timePerQuestionInMinutes.$error.required }">
+    <label for="timePerQuestionInMinutes">Time Limit for each question in minutes</label>
+    <input type="number" min="1" name="timePerQuestionInMinutes" id="timePerQuestionInMinutes" class="form-control" ng-model="vm.room.timePerQuestionInMinutes" required />
+    <span ng-show="form.timePerQuestionInMinutes.$dirty && form.timePerQuestionInMinutes.$error.required" class="help-block">Time limit is required</span>
+  </div>
+
+  <div class="form-group" ng-class="{ 'has-error': form.totalQuestions.$dirty && form.totalQuestions.$error.required }">
+    <label for="totalQuestions">Total Number of questions allowed</label>
+    <input type="number" name="totalQuestions" id="totalQuestions" class="form-control" ng-model="vm.room.totalQuestions" required />
+    <span ng-show="form.totalQuestions.$dirty && form.totalQuestions.$error.required" class="help-block">Total Number of questions</span>
+  </div>
+  <div class="form-actions">
+    <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-primary">Create New Room</button>
+    <img ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+    <button class="btn btn-link" ng-click="vm.cancelRoomCreation()">Cancel</button>
+  </div>
+</form>
+
 <p>To end the game any time - <a href="#!/login" class="btn btn-primary">Logout</a></p>

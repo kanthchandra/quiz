@@ -65,7 +65,8 @@ var rooms = global.sequelize.define('rooms', {
     },
     {
       name: 'ownerIdI',
-      fields: ['ownerId']
+      fields: ['ownerId'],
+      unique: true
     }
   ]
 });

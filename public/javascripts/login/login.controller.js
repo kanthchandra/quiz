@@ -22,7 +22,6 @@
             AuthenticationService.SetCredentials(response.data.name, response.data.token);
             $location.path('/users/' + response.data.name);
           } else {
-            console.log('response', response)
             FlashService.Error(response.message);
             vm.dataLoading = false;
           }

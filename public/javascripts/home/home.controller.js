@@ -5,12 +5,16 @@
     .module('app')
     .controller('HomeController', HomeController);
 
-  HomeController.$inject = ['UserService', '$rootScope'];
-  function HomeController(UserService, $rootScope) {
+  HomeController.$inject = ['UserService', '$rootScope', 'FlashService'];
+  function HomeController(UserService, $rootScope, FlashService) {
     var vm = this;
 
     vm.username = $rootScope.globals.currentUser.username;
-
+    vm.createRoom = createRoom;
+    vm.showCreateRoomForm = false;
+    vm.showRooms = false;
+    vm.room = {};
+    vm.cancelRoomCreation = cancelRoomCreation;
     initController();
 
     function initController() {
@@ -18,9 +22,31 @@
     }
     function loadAllRooms() {
       UserService.GetAllRooms()
-        .then(function (rooms) {
-          vm.allRooms = rooms;
+        .then(function (response) {
+          vm.allRooms = response.data;
+          if (response.data.length > 0)
+            vm.showRooms = true;
         });
+    }
+
+    function createRoom (username) {
+      vm.dataLoading = true;
+      UserService.PostRoom(vm.room)
+      .then(function (response) {
+        if (response.success) {
+          FlashService.Success('Room creation successful', true);
+          vm.dataLoading = false;
+        } else {
+          FlashService.Error(response.message);
+          vm.dataLoading = false;
+        }
+      });
+    }
+
+    function cancelRoomCreation () {
+      vm.showCreateRoomForm = false;
+      vm.room = {};
+      vm.dataLoading = false;
     }
   }
 })();

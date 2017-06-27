@@ -10,6 +10,7 @@
     var service = {};
     service.GetAllRooms = GetAllRooms;
     service.Create = Create;
+    service.PostRoom = PostRoom;
     return service;
 
     function GetAllRooms() {
@@ -17,6 +18,9 @@
     }
     function Create(user) {
         return $http.post('/users', user).then(handleSuccess, handleError);
+    }
+    function PostRoom(room) {
+      return $http.post('/rooms', room).then(handleSuccess, handleError);
     }
     // private functions
 
