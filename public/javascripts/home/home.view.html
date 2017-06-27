@@ -1,11 +1,11 @@
-﻿<h1>Hi {{vm.user.firstName}}!</h1>
-<p>You're logged in!!</p>
-<h3>All registered users:</h3>
+﻿<h1>Hi {{vm.username}}!</h1>
+<p>Please Join one of the rooms listed below to begin quizzing</p>
+<h3>List of Available Rooms</h3>
 <ul>
-    <li ng-repeat="user in vm.allUsers">
-        {{user.username}} ({{user.firstName}} {{user.lastName}})
-        - <a ng-click="vm.deleteUser(user.id)">Delete</a>
+    <li ng-repeat="room in vm.allRooms">
+        {{room.name}} ({{room.totalUsers}}/{{room.maxUsers}} Joined)
+        - <a ng-click="vm.joinRoom(vm.username)">Join</a>
     </li>
 </ul>
 <p>&nbsp;</p>
-<p><a href="#!/login" class="btn btn-primary">Logout</a></p>
+<p>To end the game any time - <a href="#!/login" class="btn btn-primary">Logout</a></p>

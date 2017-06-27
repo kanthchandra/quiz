@@ -19,9 +19,10 @@
       AuthenticationService.Login(vm.username, vm.password,
         function (response) {
           if (response.success) {
-            AuthenticationService.SetCredentials(response.data.username, response.data.token);
-            $location.path('/');
+            AuthenticationService.SetCredentials(response.data.name, response.data.token);
+            $location.path('/users/' + response.data.name);
           } else {
+            console.log('response', response)
             FlashService.Error(response.message);
             vm.dataLoading = false;
           }

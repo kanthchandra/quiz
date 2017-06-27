@@ -17,16 +17,14 @@
 
     function Login(username, password, callback) {
       $http.post('/users/authenticate', { username: username, password: password })
-        .then(handleSuccess, handleError('Error authenticating user'));
+        .then(handleSuccess, handleError);
 
       function handleSuccess(res) {
         return callback({success: true, data: res.data});
       }
 
-      function handleError(error) {
-        return function () {
-          return callback({ success: false, message: error });
-        };
+      function handleError(res) {
+        return callback({ success: false, message: res.data.message });
       }
     }
 
