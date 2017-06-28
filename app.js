@@ -93,6 +93,30 @@ function startListening(bag, next) {
    * Listen on provided port.
    */
 
+  global.io = require('socket.io').listen(bag.server);
+
+  io.sockets.on('connection', function (socket) {
+    socket.on('join', function (requestObj) {
+      logger.debug('User connected');
+      socket.join(requestObj.room);
+    });
+
+    socket.on('leave', function (requestObj) {
+        logger.debug('Someone left the room');
+      }
+    );
+
+    socket.on('answer', function (requestObj) {
+        logger.debug('Someone answered a question');
+      }
+    );
+
+    socket.on('disconnect', function (requestObj) {
+        logger.debug('Someone disconnected the room');
+      }
+    );
+  });
+
   bag.server.listen(port, listenAddr, function (error) {
     if (error) {
       // handle specific listen errors with friendly messages

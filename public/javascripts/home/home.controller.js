@@ -5,8 +5,8 @@
     .module('app')
     .controller('HomeController', HomeController);
 
-  HomeController.$inject = ['UserService', '$rootScope', 'FlashService'];
-  function HomeController(UserService, $rootScope, FlashService) {
+  HomeController.$inject = ['$location', 'UserService', '$rootScope', 'FlashService'];
+  function HomeController($location, UserService, $rootScope, FlashService) {
     var vm = this;
 
     vm.username = $rootScope.globals.currentUser.username;
@@ -36,6 +36,7 @@
         if (response.success) {
           FlashService.Success('Room creation successful', true);
           vm.dataLoading = false;
+          $location.path('/rooms/' + vm.room.name);
         } else {
           FlashService.Error(response.message);
           vm.dataLoading = false;

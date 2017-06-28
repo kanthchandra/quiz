@@ -13,6 +13,11 @@
         templateUrl: 'javascripts/home/home.view.html',
         controllerAs: 'vm'
       })
+      .when('/rooms/:roomName', {
+        controller: 'RoomController',
+        templateUrl: 'javascripts/rooms/room.view.html',
+        controllerAs: 'vm'
+      })
       .when('/login', {
         controller: 'LoginController',
         templateUrl: 'javascripts/login/login.view.html',

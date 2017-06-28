@@ -8,4 +8,5 @@ function users(app) {
     require('./joinRoomById.js'));
   app.post('/rooms', validateAccount, require('./post.js'));
   app.get('/rooms', validateAccount, require('./getAllRooms.js'));
+  app.get('/rooms/:roomName', validateAccount, require('./getRoomByName.js'));
 }

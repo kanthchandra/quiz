@@ -11,6 +11,8 @@
     service.GetAllRooms = GetAllRooms;
     service.Create = Create;
     service.PostRoom = PostRoom;
+    service.getUserByName = getUserByName;
+    service.getRoomByName = getRoomByName;
     return service;
 
     function GetAllRooms() {
@@ -21,6 +23,12 @@
     }
     function PostRoom(room) {
       return $http.post('/rooms', room).then(handleSuccess, handleError);
+    }
+    function getUserByName(userName) {
+      return $http.get('/users/' + userName).then(handleSuccess, handleError);
+    }
+    function getRoomByName(roomName) {
+      return $http.get('/rooms/' + roomName).then(handleSuccess, handleError);
     }
     // private functions
 
