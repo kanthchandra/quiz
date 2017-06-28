@@ -28,25 +28,46 @@
       UserService.getUserByName(vm.username)
         .then(function (response) {
           vm.user = response.data;
+          joinToRoomSocket();
+          joinToUserSocket();
           subscribeToRoomSocket();
           subscribeToUserSocket();
         });
     }
 
-    function subscribeToRoomSocket() {
-      SocketService.emit('join', {
+    function joinToRoomSocket() {
+      SocketService.emit('join:quiz', {
         room: '/rooms/' + $routeParams.roomName,
+        roomName: $routeParams.roomName,
+        type: 'room',
+        username: null,
         token: $rootScope.globals.currentUser.token
       }, function (response) {
-        console.log('subscribeToRoomSocket');
+        console.log('subscribeToRoomSocket', response);
       });
     }
-    function subscribeToUserSocket() {
-      SocketService.emit('join', {
+
+    function joinToUserSocket() {
+      SocketService.emit('join:user', {
         room: '/users/' + vm.username,
+        roomName: vm.username,
+        type: 'user',
+        username: $rootScope.globals.currentUser.username,
         token: $rootScope.globals.currentUser.token
       }, function (response) {
-        console.log('subscribeToUserSocket');
+        console.log('subscribeToUserSocket', response);
+      });
+    }
+
+    function subscribeToRoomSocket() {
+      SocketService.on('quiz:joined', function (response) {
+        console.log('subscribeToRoomSocket', response);
+      });
+    }
+
+    function subscribeToUserSocket() {
+      SocketService.on('user:joined', function (response) {
+        console.log('subscribeToUserSocket', response);
       });
     }
   }

@@ -41,7 +41,8 @@ function init() {
       startListening.bind(null, bag),
       initializeDatabaseConfig.bind(null, bag),
       initializeSequelize.bind(null, bag),
-      initializeRoutes.bind(null, bag)
+      initializeRoutes.bind(null, bag),
+      startListeningToSockets.bind(null, bag)
     ],
     function (err) {
       if (err) {
@@ -96,17 +97,22 @@ function startListening(bag, next) {
   global.io = require('socket.io').listen(bag.server);
 
   io.sockets.on('connection', function (socket) {
-    socket.on('join', function (requestObj) {
+    socket.on('join:quiz', function (requestObj) {
       logger.debug('User connected');
-      socket.join(requestObj.room);
+      handleJoinRequest(requestObj, socket);
     });
 
-    socket.on('leave', function (requestObj) {
+    socket.on('leave:quiz', function (requestObj) {
         logger.debug('Someone left the room');
       }
     );
 
-    socket.on('answer', function (requestObj) {
+    socket.on('answer:quiz', function (requestObj) {
+        logger.debug('Someone answered a question');
+      }
+    );
+
+    socket.on('start:quiz', function (requestObj) {
         logger.debug('Someone answered a question');
       }
     );
@@ -206,6 +212,52 @@ function initializeRoutes(bag, next) {
   );
   return next();
 }
+
+function startListeningToSockets(bag, next) {
+  logger.debug('Listening to sockets');
+  var handleJoinRequest = require('./auth/handleJoinRequest.js');
+
+  /**
+   * Listen on provided port.
+   */
+
+  global.io = require('socket.io').listen(bag.server);
+
+  io.sockets.on('connection', function (socket) {
+    socket.on('join:quiz', function (requestObj) {
+      logger.debug('User connected to join:quiz event');
+      handleJoinRequest(requestObj, socket);
+    });
+
+    socket.on('join:user', function (requestObj) {
+      logger.debug('User connected to join:user event');
+      handleJoinRequest(requestObj, socket);
+    });
+
+    socket.on('leave:quiz', function (requestObj) {
+        logger.debug('Someone left the room');
+      }
+    );
+
+    socket.on('answer:quiz', function (requestObj) {
+        logger.debug('Someone answered a question');
+      }
+    );
+
+    socket.on('start:quiz', function (requestObj) {
+        logger.debug('Someone answered a question');
+      }
+    );
+
+    socket.on('disconnect', function (requestObj) {
+        logger.debug('Someone disconnected the room');
+      }
+    );
+  });
+
+  return next();
+}
+
 
 function shutdown(message, err) {
   logger.error(util.inspect(message, {depth: null}));
