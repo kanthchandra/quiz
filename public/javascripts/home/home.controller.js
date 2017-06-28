@@ -11,6 +11,7 @@
 
     vm.username = $rootScope.globals.currentUser.username;
     vm.createRoom = createRoom;
+    vm.joinRoom = joinRoom;
     vm.showCreateRoomForm = false;
     vm.showRooms = false;
     vm.room = {};
@@ -48,6 +49,10 @@
       vm.showCreateRoomForm = false;
       vm.room = {};
       vm.dataLoading = false;
+    }
+
+    function joinRoom(room) {
+      $location.path('/rooms/' + room.name);
     }
   }
 })();
