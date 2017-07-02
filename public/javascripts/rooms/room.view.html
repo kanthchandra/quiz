@@ -1,6 +1,19 @@
-<h3>Hi {{vm.username}}!</h3>
-<span>
-  <p>Please wait for the admin to start the quiz</p>
-  <p>&nbsp;</p>
-</span>
-<p>To end the game any time - <a href="#!/login" class="btn btn-primary">Logout</a></p>
+<div class="container-fluid">
+  <div class="col-sm-3">
+    <div class="row" ng-if="!user.joinRequestApproved" ng-repeat="user in vm.pendingRequests track by $index"><li>{{user.userName}} requested to join {{vm.roomName}}</li><div class="btn btn-primary" ng-click="PermitUser(user)"> - Allow</div></div>
+  </div>
+  <div class="col-sm-6">
+    <div class="row">
+		<h3>Hi {{vm.username}}!</h3>
+		<span>
+		  <p>Please wait for the admin to start the quiz</p>
+		  <p>&nbsp;</p>
+		</span>
+		<p>To end the game any time - <a href="#!/login" class="btn btn-primary">Logout</a></p>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="row" ng-repeat="user in vm.joinedUsers track by $index"><li>{{user}} joined room {{vm.roomName}}</li></div>
+  </div>
+  </div>
+</div>

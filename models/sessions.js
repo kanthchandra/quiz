@@ -11,6 +11,14 @@ var sessions = global.sequelize.define('sessions', {
     allowNull: false,
     autoIncrement: true
   },
+  roomName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  userName: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
   userId: {
     type: Sequelize.INTEGER,
     allowNull: false

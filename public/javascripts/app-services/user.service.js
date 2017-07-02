@@ -13,6 +13,8 @@
     service.PostRoom = PostRoom;
     service.getUserByName = getUserByName;
     service.getRoomByName = getRoomByName;
+    service.getAllPendingRequests = getAllPendingRequests;
+    service.getAllJoinedUsers = getAllJoinedUsers;
     return service;
 
     function GetAllRooms() {
@@ -29,6 +31,12 @@
     }
     function getRoomByName(roomName) {
       return $http.get('/rooms/' + roomName).then(handleSuccess, handleError);
+    }
+    function getAllPendingRequests(roomId) {
+      return $http.get('/rooms/' + roomId + '/requests').then(handleSuccess, handleError);
+    }
+    function getAllJoinedUsers(roomId) {
+      return $http.get('/rooms/' + roomId + '/sessions').then(handleSuccess, handleError);
     }
     // private functions
 

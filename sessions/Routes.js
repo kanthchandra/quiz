@@ -6,5 +6,6 @@ module.exports = sessions;
 function sessions(app) {
   app.get('/sessions/:sessionId', validateAccount,
     require('./getSessionById.js'));
-  app.put('sessions/:sessionId', require('./updateSessionById.js'));
+  app.put('/sessions/:sessionId', require('./updateSessionById.js'));
+  app.get('/rooms/:roomId/sessions', validateAccount, require('./getAllSessions.js'))
 }
