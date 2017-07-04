@@ -94,35 +94,6 @@ function startListening(bag, next) {
    * Listen on provided port.
    */
 
-  global.io = require('socket.io').listen(bag.server);
-
-  io.sockets.on('connection', function (socket) {
-    socket.on('join:quiz', function (requestObj) {
-      logger.debug('User connected');
-      handleJoinRequest(requestObj, socket);
-    });
-
-    socket.on('leave:quiz', function (requestObj) {
-        logger.debug('Someone left the room');
-      }
-    );
-
-    socket.on('answer:quiz', function (requestObj) {
-        logger.debug('Someone answered a question');
-      }
-    );
-
-    socket.on('start:quiz', function (requestObj) {
-        logger.debug('Someone answered a question');
-      }
-    );
-
-    socket.on('disconnect', function (requestObj) {
-        logger.debug('Someone disconnected the room');
-      }
-    );
-  });
-
   bag.server.listen(port, listenAddr, function (error) {
     if (error) {
       // handle specific listen errors with friendly messages
@@ -216,6 +187,9 @@ function initializeRoutes(bag, next) {
 function startListeningToSockets(bag, next) {
   logger.debug('Listening to sockets');
   var handleJoinRequest = require('./auth/handleJoinRequest.js');
+  var handlePermissionApprovedRequest =
+    require('./auth/handlePermissionApprovedRequest.js');
+  var handleStartQuizEvent = require('./auth/handleStartQuizRequest.js');
 
   /**
    * Listen on provided port.
@@ -234,17 +208,23 @@ function startListeningToSockets(bag, next) {
       handleJoinRequest(requestObj, socket);
     });
 
+    socket.on('permission:approved', function (requestObj) {
+      logger.debug('Permission approved for user');
+      handlePermissionApprovedRequest(requestObj, socket);
+    });
+
+    socket.on('quiz:start', function (requestObj) {
+        logger.debug('Someone answered a question');
+        handleStartQuizEvent(requestObj, socket);
+      }
+    );
+
     socket.on('leave:quiz', function (requestObj) {
         logger.debug('Someone left the room');
       }
     );
 
     socket.on('answer:quiz', function (requestObj) {
-        logger.debug('Someone answered a question');
-      }
-    );
-
-    socket.on('start:quiz', function (requestObj) {
         logger.debug('Someone answered a question');
       }
     );

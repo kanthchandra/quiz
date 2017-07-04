@@ -11,6 +11,15 @@
     vm.joinedUsers = [];
     vm.pendingRequests = [];
     vm.roomName = $routeParams.roomName;
+    vm.permitUser = permitUser;
+    vm.quizStarted = false;
+    vm.startQuiz = startQuiz;
+    vm.questions = [];
+    vm.currentAnswerModel = {
+       questionId : '',
+       answerOption : ''
+    };
+    vm.submitAnswer = submitAnswer;
 
     vm.username = $rootScope.globals.currentUser.username;
     initController();
@@ -44,6 +53,8 @@
             subscribeToErrorSocket();
             subscribeToUserSocket();
             subscribeToPermissionSocket();
+            subscribeToAnnouncementSocket();
+            subscribeToQuestionSocket();
           } else {
             FlashService.Error(response, false);
             $location.path('/login');
@@ -82,6 +93,32 @@
         });
     }
 
+    function permitUser(user) {
+      SocketService.emit('permission:approved', {
+        roomUrl: '/rooms/' + $routeParams.roomName,
+        roomName: $routeParams.roomName,
+        username: user.userName,
+        token: $rootScope.globals.currentUser.token
+      }, function (response) {
+          
+      });
+    }
+
+    function startQuiz(user) {
+      SocketService.emit('quiz:start', {
+        roomUrl: '/rooms/' + $routeParams.roomName,
+        roomName: $routeParams.roomName,
+        username: $rootScope.globals.currentUser.username,
+        token: $rootScope.globals.currentUser.token
+      }, function (response) {
+          
+      });
+    }
+
+    function submitAnswer() {
+      console.log(vm.currentAnswerModel);
+    }
+
     function joinToRoomSocket() {
       SocketService.emit('join:quiz', {
         roomUrl: '/rooms/' + $routeParams.roomName,
@@ -111,9 +148,37 @@
       });
     }
 
+    function subscribeToQuestionSocket() {
+      SocketService.on('quiz:questions', function (response) {
+        vm.quizStarted = true;
+        vm.questions.push(response.message);
+        vm.currentQuestion = response.message;
+        vm.currentQuestion.options = {
+          A: response.message.optionA,
+          B: response.message.optionB,
+          C: response.message.optionC,
+          D: response.message.optionD
+        }
+        vm.currentAnswerModel = {
+           questionId : vm.currentQuestion.id,
+        };
+        vm.currentAnswerModel[response.message.optionA] = false;
+        vm.currentAnswerModel[response.message.optionB] = false;
+        vm.currentAnswerModel[response.message.optionC] = false;
+        vm.currentAnswerModel[response.message.optionD] = false;
+      });
+    }
+
+    function subscribeToAnnouncementSocket() {
+      SocketService.on('quiz:announcement', function (response) {
+        FlashService.Success(response, false);
+
+      });
+    }
+
     function subscribeToPermissionSocket() {
       SocketService.on('user:permission', function (response) {
-        FlashService.Success(response, false);
+        vm.pendingRequests.push({ userName: response.userName, joinRequestApproved: false});
       });
     }
   }

@@ -6,6 +6,7 @@ module.exports = self;
 var async = require('async');
 var _ = require('underscore');
 var rooms = require('../models/rooms.js');
+var questions = require('../models/questions.js');
 
 function post(req, res) {
   var bag = {
@@ -18,6 +19,7 @@ function post(req, res) {
 
   async.series([
       _checkInputParams.bind(null, bag),
+      _getQuestions.bind(null, bag),
       _post.bind(null, bag)
     ],
     function (err) {
@@ -51,17 +53,47 @@ function _checkInputParams(bag, next) {
   return next();
 }
 
+function _getQuestions(bag, next) {
+  logger.verbose('Inside |rooms|post|_getQuestions');
+  var limit = 10;
+  if (bag.reqBody.totalQuestions < limit);
+    limit = bag.reqBody.totalQuestions;
+  var query = {
+    where: {},
+    limit: limit
+  };
+
+  questions.findAll(query).asCallback(
+    function (err, questions) {
+      if (err)
+        return next({statusCode: 500, message: err})
+
+      bag.questionIds = _.pluck(questions, 'id');
+      return next();
+    }
+  );
+}
 
 function _post(bag, next) {
-  logger.verbose('Inside |users|post|_post');
+  logger.verbose('Inside |rooms|post|_post');
+
+
+  var totalQuestions = 10;
+  if (bag.reqBody.totalQuestions < totalQuestions);
+    totalQuestions = bag.reqBody.totalQuestions;
+
+  var timePerQuestionInMinutes = 1;
+  if (bag.reqBody.timePerQuestionInMinutes < timePerQuestionInMinutes);
+    timePerQuestionInMinutes = bag.reqBody.timePerQuestionInMinutes;
 
   var room = {
     name: bag.reqBody.name,
-    totalQuestions: bag.reqBody.totalQuestions,
+    totalQuestions: totalQuestions,
     maxUsers: bag.reqBody.maxUsers,
-    timePerQuestionInMinutes: bag.reqBody.timePerQuestionInMinutes,
+    timePerQuestionInMinutes: timePerQuestionInMinutes,
     ownerId: bag.req.user.id,
-    totalUsers: 1
+    totalUsers: 0,
+    questionIds: bag.questionIds
   };
 
   rooms.create(room).asCallback(

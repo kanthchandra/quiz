@@ -1,14 +1,22 @@
 <div class="container-fluid">
   <div class="col-sm-3">
-    <div class="row" ng-if="!user.joinRequestApproved" ng-repeat="user in vm.pendingRequests track by $index"><li>{{user.userName}} requested to join {{vm.roomName}}</li><div class="btn btn-primary" ng-click="PermitUser(user)"> - Allow</div></div>
+    <div class="row" ng-if="!user.joinRequestApproved" ng-repeat="user in vm.pendingRequests track by $index"><li>{{user.userName}} requested to join {{vm.roomName}} - <a ng-click="vm.permitUser(user)">Allow</a></li></div>
   </div>
   <div class="col-sm-6">
     <div class="row">
 		<h3>Hi {{vm.username}}!</h3>
-		<span>
-		  <p>Please wait for the admin to start the quiz</p>
+		<span ng-if="!vm.quizStarted">
+		  <p ng-if="vm.room.ownerId !== vm.user.id">Please wait for the admin to start the quiz</p>
+      <p ng-if="vm.room.ownerId === vm.user.id">Click to start the quiz- <button class="btn btn-primary" ng-click="vm.startQuiz(vm.room)">Start</button></p>
 		  <p>&nbsp;</p>
 		</span>
+    <span ng-if="vm.quizStarted">
+      <p>{{vm.currentQuestion.question}}</p>
+      <label ng-repeat="option in vm.currentQuestion.options">
+          <input type="checkbox" ng-model="vm.currentAnswerModel[option]" /> {{option}} 
+      </label>
+      <p><button class="btn btn-primary" ng-click="vm.submitAnswer()">Submit</button></p>
+    </span>
 		<p>To end the game any time - <a href="#!/login" class="btn btn-primary">Logout</a></p>
     </div>
   </div>
