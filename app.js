@@ -190,6 +190,7 @@ function startListeningToSockets(bag, next) {
   var handlePermissionApprovedRequest =
     require('./auth/handlePermissionApprovedRequest.js');
   var handleStartQuizEvent = require('./auth/handleStartQuizRequest.js');
+  var handleAnswerQuestionEvent = require('./auth/handleAnswerQuestionEvent.js');
 
   /**
    * Listen on provided port.
@@ -224,8 +225,9 @@ function startListeningToSockets(bag, next) {
       }
     );
 
-    socket.on('answer:quiz', function (requestObj) {
+    socket.on('quiz:answer', function (requestObj) {
         logger.debug('Someone answered a question');
+        handleAnswerQuestionEvent(requestObj, socket);
       }
     );
 

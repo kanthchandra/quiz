@@ -116,7 +116,24 @@
     }
 
     function submitAnswer() {
-      console.log(vm.currentAnswerModel);
+      for (var property in vm.currentQuestion.options) {
+        if (vm.currentQuestion.options.hasOwnProperty(property)) {
+            // do stuff
+            var answer = vm.currentQuestion.options[property];
+            if (vm.currentAnswerModel[answer] === true)
+              vm.currentAnswerModel.answerOption = property;
+        }
+      }
+      SocketService.emit('quiz:answer', {
+        roomUrl: '/rooms/' + $routeParams.roomName,
+        roomName: $routeParams.roomName,
+        username: $rootScope.globals.currentUser.username,
+        token: $rootScope.globals.currentUser.token,
+        questionId: vm.currentAnswerModel.questionId,
+        answerOption: vm.currentAnswerModel.answerOption
+      }, function (response) {
+          
+      });
     }
 
     function joinToRoomSocket() {

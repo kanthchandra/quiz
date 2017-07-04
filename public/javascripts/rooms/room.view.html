@@ -12,7 +12,7 @@
 		</span>
     <span ng-if="vm.quizStarted">
       <p>{{vm.currentQuestion.question}}</p>
-      <label ng-repeat="option in vm.currentQuestion.options">
+      <label ng-repeat="(key, option) in vm.currentQuestion.options">
           <input type="checkbox" ng-model="vm.currentAnswerModel[option]" /> {{option}} 
       </label>
       <p><button class="btn btn-primary" ng-click="vm.submitAnswer()">Submit</button></p>

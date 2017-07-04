@@ -241,7 +241,7 @@ function _createSession(bag, next) {
     questionsUnattempted: 0,
     joinRequestApproved: true,
     startedAt: null,
-    submittedAnswers: {}
+    submittedAnswers: []
   };
 
   sessions.create(session).asCallback(
